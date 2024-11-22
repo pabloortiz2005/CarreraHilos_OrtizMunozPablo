@@ -6,7 +6,9 @@ package com.mycompany.carrerahilos_ortizmunozpablo;
 
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JProgressBar;
 
 /**
@@ -26,16 +28,31 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
         this.setLayout(null);  // Desactivar el layout para poder usar setBounds
         
         // Inicializar los JLabel para los coches
-        dorado = new JLabel(new ImageIcon("../../../resources/dorado.png"));
-        negro = new JLabel(new ImageIcon("../../../resources/negro.png"));
-        rojo = new JLabel(new ImageIcon("../../../resources/rojo.png"));
-        verde = new JLabel(new ImageIcon("../../../resources/verde.png"));
+                // Agregar la imagen de fondo
+                
+         // Crear un JLayeredPane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0, 0, this.getWidth(), this.getHeight()); // Tamaño del JLayeredPane
+        panel1.add(layeredPane); // Añadir el JLayeredPane al JPanel
+        
+        
+        ImageIcon fondo = (new ImageIcon(getClass().getResource("/carrera.png")));
+        JLabel labelFondo = new JLabel(fondo);
+        labelFondo.setBounds(0, 0, this.getWidth(), this.getHeight());
+        layeredPane.add(labelFondo, 3);  // Agregar fondo al panel
+        
+        dorado = new JLabel(new ImageIcon(getClass().getResource("/dorado.png")));
+        negro = new JLabel(new ImageIcon(getClass().getResource("/negro.png")));
+        rojo = new JLabel(new ImageIcon(getClass().getResource("/rojo.png")));
+        verde = new JLabel(new ImageIcon(getClass().getResource("/verde.png")));
         
         // Posicionar los coches
-        dorado.setBounds(50, 50, 100, 50);
-        negro.setBounds(50, 150, 100, 50);
-        rojo.setBounds(50, 250, 100, 50);
-        verde.setBounds(50, 350, 100, 50);
+        dorado.setBounds(50, 80, 250, 150);
+        negro.setBounds(50, 330, 250, 150);
+        rojo.setBounds(50, 580, 250, 150);
+        verde.setBounds(50, 820, 250, 150);
+        
+        
         
         // Inicializar las barras de progreso
         barraDorado = new JProgressBar();
@@ -44,41 +61,66 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
         barraVerde = new JProgressBar();
         
         // Configurar las barras de progreso
-        barraDorado.setBounds(200, 50, 800, 20);
-        barraNegro.setBounds(200, 150, 800, 20);
-        barraRojo.setBounds(200, 250, 800, 20);
-        barraVerde.setBounds(200, 350, 800, 20);
+        barraDorado.setBounds(50, 50, 950, 20);
+        barraNegro.setBounds(50, 150, 950, 20);
+        barraRojo.setBounds(50, 250, 950, 20);
+        barraVerde.setBounds(50, 350, 950, 20);
         
-        // Agregar la imagen de fondo
-        ImageIcon fondo = new ImageIcon("../../../resources/carrera.png");
-        JLabel labelFondo = new JLabel(fondo);
-        labelFondo.setBounds(0, 0, this.getWidth(), this.getHeight());
-        panel1.add(labelFondo);  // Agregar fondo al panel
+
+      
+        layeredPane.add(dorado,0);
+        layeredPane.add(negro,0);
+        layeredPane.add(rojo,0);
+        layeredPane.add(verde,0);
+        layeredPane.add(barraDorado,9);
+        layeredPane.add(barraNegro,9); 
+        layeredPane.add(barraRojo,9);
+        layeredPane.add(barraVerde,9);
+        layeredPane.add(btnReiniciar, 0);
+        layeredPane.repaint();
         
-        // Agregar los coches y las barras de progreso después del fondo
-        panel1.add(dorado);
-        panel1.add(negro);
-        panel1.add(rojo);
-        panel1.add(verde);
-        panel1.add(barraDorado);
-        panel1.add(barraNegro); 
-        panel1.add(barraRojo);
-        panel1.add(barraVerde);
-        panel1.repaint();
-        
-        // Crear y lanzar los hilos
-        Thread hiloDorado = new Thread(new carrera(barraDorado, dorado));
-        Thread hiloNegro = new Thread(new carrera(barraNegro, negro));
-        Thread hiloRojo = new Thread(new carrera(barraRojo, rojo));
-        Thread hiloVerde = new Thread(new carrera(barraVerde, verde));
-        
-        hiloDorado.start();
-        hiloNegro.start();
-        hiloRojo.start();
-        hiloVerde.start();
+        Carrera();
+  
        
         
     }
+    private void reiniciarCarrera() {
+    // Reiniciar las barras de progreso
+    barraDorado.setValue(0);
+    barraNegro.setValue(0);
+    barraRojo.setValue(0);
+    barraVerde.setValue(0);
+
+    // Restablecer la posición de los coches
+    dorado.setBounds(0, 80, 250, 150);
+    negro.setBounds(0, 330, 250, 150);
+    rojo.setBounds(0, 580, 250, 150);
+    verde.setBounds(0, 820, 250, 150);
+    
+    // Restablecer las imágenes de los coches a su estado inicial
+    dorado.setIcon(new ImageIcon(getClass().getResource("/dorado.png")));
+    negro.setIcon(new ImageIcon(getClass().getResource("/negro.png")));
+    rojo.setIcon(new ImageIcon(getClass().getResource("/rojo.png")));
+    verde.setIcon(new ImageIcon(getClass().getResource("/verde.png")));
+    
+       carrera.hayGanador = false;
+
+    // Volver a iniciar los hilos
+    
+        Carrera();
+}
+    private void Carrera() {
+    // Crear y lanzar los hilos nuevamente
+    Thread hiloDorado = new Thread(new carrera(barraDorado, dorado));
+    Thread hiloNegro = new Thread(new carrera(barraNegro, negro));
+    Thread hiloRojo = new Thread(new carrera(barraRojo, rojo));
+    Thread hiloVerde = new Thread(new carrera(barraVerde, verde));
+
+    hiloDorado.start();
+    hiloNegro.start();
+    hiloRojo.start();
+    hiloVerde.start();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,33 +132,53 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
     private void initComponents() {
 
         panel1 = new javax.swing.JPanel();
+        btnReiniciar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        btnReiniciar.setText("Reiniciar");
+        btnReiniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReiniciarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGroup(panel1Layout.createSequentialGroup()
+                .addGap(529, 529, 529)
+                .addComponent(btnReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(638, Short.MAX_VALUE))
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                .addGap(0, 1013, Short.MAX_VALUE)
+                .addComponent(btnReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
+        reiniciarCarrera();
+        
+    }//GEN-LAST:event_btnReiniciarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,6 +217,7 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReiniciar;
     private javax.swing.JPanel panel1;
     // End of variables declaration//GEN-END:variables
 }
