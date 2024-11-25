@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 /**
@@ -21,6 +22,8 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
     
     // Declaramos las barras de progreso
     private JProgressBar barraDorado, barraNegro, barraRojo, barraVerde;
+    static private int distanciaDorado, distanciaNegro, distanciaRojo, distanciaVerde;
+
     
     public carrera_OrtizMunozPablo() {
         initComponents();
@@ -84,7 +87,23 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
        
         
     }
-    private void reiniciarCarrera() {
+     static public void actualizarDistancia(int id, int distancia) {
+        switch (id) {
+            case 1:
+                distanciaDorado = distancia;
+                break;
+            case 2:
+                distanciaNegro = distancia;
+                break;
+            case 3:
+                distanciaRojo = distancia;
+                break;
+            case 4:
+                distanciaVerde = distancia;
+                break;
+        }
+    }
+   private void reiniciarCarrera() {
     // Reiniciar las barras de progreso
     barraDorado.setValue(0);
     barraNegro.setValue(0);
@@ -103,24 +122,36 @@ public class carrera_OrtizMunozPablo extends javax.swing.JFrame {
     rojo.setIcon(new ImageIcon(getClass().getResource("/rojo.png")));
     verde.setIcon(new ImageIcon(getClass().getResource("/verde.png")));
     
-       carrera.hayGanador = false;
+    // Restablecer la variable hayGanador
+    carrera.hayGanador = false;
 
     // Volver a iniciar los hilos
-    
-        Carrera();
+    Carrera();
 }
     private void Carrera() {
     // Crear y lanzar los hilos nuevamente
-    Thread hiloDorado = new Thread(new carrera(barraDorado, dorado));
-    Thread hiloNegro = new Thread(new carrera(barraNegro, negro));
-    Thread hiloRojo = new Thread(new carrera(barraRojo, rojo));
-    Thread hiloVerde = new Thread(new carrera(barraVerde, verde));
+    Thread hiloDorado = new Thread(new carrera(barraDorado, dorado, 1));
+    Thread hiloNegro = new Thread(new carrera(barraNegro, negro, 2));
+    Thread hiloRojo = new Thread(new carrera(barraRojo, rojo, 3));
+    Thread hiloVerde = new Thread(new carrera(barraVerde, verde, 4));
 
     hiloDorado.start();
     hiloNegro.start();
     hiloRojo.start();
     hiloVerde.start();
 }
+   public static void mostrarResultados() {
+    String mensaje = "Resultados de la Carrera:\n";
+    mensaje += "Cohete Dorado recorrió: " + distanciaDorado + " unidades.\n";
+    mensaje += "Cohete Negro recorrió: " + distanciaNegro + " unidades.\n";
+    mensaje += "Cohete Rojo recorrió: " + distanciaRojo + " unidades.\n";
+    mensaje += "Cohete Verde recorrió: " + distanciaVerde + " unidades.\n";
+
+    JOptionPane.showMessageDialog(null, mensaje, "Resultados de la Carrera", JOptionPane.INFORMATION_MESSAGE);
+}
+
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
